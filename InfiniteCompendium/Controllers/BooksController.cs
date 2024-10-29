@@ -20,9 +20,15 @@ namespace InfiniteCompendium.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()  
         {
-            return View(await _context.Books.ToListAsync());
+            var books = await _context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Status)
+            .Include(b => b.Category)
+            .ToListAsync();
+
+            return View(books);
         }
 
         // GET: Books/Details/5
@@ -46,9 +52,9 @@ namespace InfiniteCompendium.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewBag.StatusName = new SelectList(_context.Statuses, "ID", "statusName");
-            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
-            ViewBag.AuthorName = new SelectList(_context.Authors, "ID", "authorName");
+            ViewBag.StatusName = new SelectList(_context.Statuses, "ID", "StatusName");
+            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "CategoryName");
+            ViewBag.AuthorName = new SelectList(_context.Authors, "ID", "AuthorName");
 
             return View();
         }
@@ -57,15 +63,20 @@ namespace InfiniteCompendium.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Author,status,Category")] Book book)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Title,AuthorId,StatusId,CategoryId")] Book book)
         {
             ViewBag.statusName = new SelectList(_context.Statuses, "ID", "statusName");
             ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
             ViewBag.AuthorsName = new SelectList(_context.Authors, "ID", "authorName");
+            
+            Console.WriteLine("DATAAAAAA");
+            Console.WriteLine($"AuthorId: {book.AuthorId}, CategoryId: {book.CategoryId}, StatusId: {book.StatusId}");
+
             if (ModelState.IsValid)
             {
                 Console.WriteLine("ADDED NEW ROW");
+                Console.WriteLine(book);
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,6 +84,7 @@ namespace InfiniteCompendium.Controllers
             else
             {
                 Console.WriteLine("FAILED");
+                Console.WriteLine(book);
             }
             return View(book);
         }
@@ -97,7 +109,7 @@ namespace InfiniteCompendium.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Author,status,Category")] Book books)
         {
             if (id != books.ID)
@@ -148,7 +160,7 @@ namespace InfiniteCompendium.Controllers
 
         // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var books = await _context.Books.FindAsync(id);
