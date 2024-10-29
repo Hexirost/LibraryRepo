@@ -48,6 +48,7 @@ namespace InfiniteCompendium.Controllers
         {
             ViewBag.StatusName = new SelectList(_context.Statuses, "ID", "statusName");
             ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
+            ViewBag.AuthorName = new SelectList(_context.Authors, "ID", "authorName");
 
             return View();
         }
@@ -59,15 +60,20 @@ namespace InfiniteCompendium.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,Author,status,Category")] Book book)
         {
+            ViewBag.statusName = new SelectList(_context.Statuses, "ID", "statusName");
+            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
+            ViewBag.AuthorsName = new SelectList(_context.Authors, "ID", "authorName");
             if (ModelState.IsValid)
             {
+                Console.WriteLine("ADDED NEW ROW");
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.statusName = new SelectList(_context.Statuses, "ID", "statusName");
-            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
+            else
+            {
+                Console.WriteLine("FAILED");
+            }
             return View(book);
         }
 

@@ -13,6 +13,7 @@ namespace InfiniteCompendium.Data
         public DbSet<InfiniteCompendium.Models.Book> Books { get; set; } = default!;
         public DbSet<InfiniteCompendium.Models.Status> Statuses { get; set; } = default!;
         public DbSet<InfiniteCompendium.Models.Category> Categories { get; set; } = default!;
+        public DbSet<InfiniteCompendium.Models.Author> Authors { get; set; } = default!;
 
     }
 }
