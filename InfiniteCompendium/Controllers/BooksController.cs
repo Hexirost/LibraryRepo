@@ -46,6 +46,9 @@ namespace InfiniteCompendium.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            ViewBag.StatusName = new SelectList(_context.Statuses, "ID", "statusName");
+            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
+
             return View();
         }
 
@@ -54,15 +57,18 @@ namespace InfiniteCompendium.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Author,status,Category")] Books books)
+        public async Task<IActionResult> Create([Bind("ID,Title,Author,status,Category")] Book book)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(books);
+                _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(books);
+
+            ViewBag.statusName = new SelectList(_context.Statuses, "ID", "statusName");
+            ViewBag.CategoryName = new SelectList(_context.Categories, "ID", "categoryName");
+            return View(book);
         }
 
         // GET: Books/Edit/5
@@ -86,7 +92,7 @@ namespace InfiniteCompendium.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Author,status,Category")] Books books)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Author,status,Category")] Book books)
         {
             if (id != books.ID)
             {

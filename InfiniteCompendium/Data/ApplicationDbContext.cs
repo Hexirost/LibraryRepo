@@ -10,6 +10,9 @@ namespace InfiniteCompendium.Data
             : base(options)
         {
         }
-        public DbSet<InfiniteCompendium.Models.Books> Books { get; set; } = default!;
+        public DbSet<InfiniteCompendium.Models.Book> Books { get; set; } = default!;
+        public DbSet<InfiniteCompendium.Models.Status> Statuses { get; set; } = default!;
+        public DbSet<InfiniteCompendium.Models.Category> Categories { get; set; } = default!;
+
     }
 }
